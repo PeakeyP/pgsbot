@@ -2,6 +2,7 @@
 
 import asyncio
 import discord
+from datetime import datetime
 
 class PgsBot(discord.Client):
     def __init__(self, *args, **kwargs):
@@ -43,6 +44,19 @@ class PgsBot(discord.Client):
         await self.wait_until_ready()
 
         print("Connected!")
+
+        channel = self.get_channel(CHANNEL_ID)
+
+        while not self.is_closed():
+            now = datetime.now()
+            nextCommunityDay = 8
+
+            if now.day == nextCommunityDay and now.hour == 8 and now.minute == 0:
+                await channel.send( '@everyone today is Community Day, ' \
+                                    'make sure you\'re up early grabbing ' \
+                                    'pinap berries and balls!!')
+
+            await asyncio.sleep(60)
 
 client = PgsBot()
 client.run('API_KEY')
