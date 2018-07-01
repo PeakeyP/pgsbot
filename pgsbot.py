@@ -16,7 +16,8 @@ class PgsBot(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        await message.channel.send('Thanks for your message!')
+        if message.content == '!ping':
+            await message.channel.send('pong')
 
 client = PgsBot()
 client.run('API_KEY')
