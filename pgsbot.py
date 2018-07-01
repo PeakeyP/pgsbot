@@ -56,6 +56,14 @@ class PgsBot(discord.Client):
                                     'make sure you\'re up early grabbing ' \
                                     'pinap berries and balls!!')
 
+            if now.day == nextCommunityDay - 2 and now.hour == 10 and now.minute == 0:
+                await channel.send( '@everyone Community Day is in 2 days! ' \
+                                    'Make sure you\'re stocked up!')
+
+            if now.day == nextCommunityDay - 7 and now.hour == 10 and now.minute == 0:
+                await channel.send( '@everyone we have got a Community Day in a ' \
+                        'week - Plenty of time to fill up your bag with goodies!')
+
             if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
                 if now.isocalendar()[1] % 2 == 0:
                     msg = 'Trainers, nesting species have migrated! The 57th Global ' \
