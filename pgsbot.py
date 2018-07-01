@@ -67,14 +67,18 @@ class PgsBot(discord.Client):
                         'week - Plenty of time to fill up your bag with goodies!')
 
             if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
+                nestsChannelID = int(self.config['channel']['nests'])
+                nestsChannel = self.get_channel(nestsChannelID)
+
                 if now.isocalendar()[1] % 2 == 0:
                     msg = 'Trainers, nesting species have migrated! The 57th Global ' \
                             'Nest Migration has occured, and we need @everyone to ' \
-                            'help report new nesting species to the #nests channel.'
+                            'help report new nesting species to the <#{}> channel.'
+                            .format(nestssChannelID)
                 else:
                     msg = '@everyone, Nests will migrate next week!'
 
-                await channel.send(msg)
+                await nestsChannel.send(msg)
 
             await asyncio.sleep(60)
 
