@@ -71,10 +71,10 @@ class PgsBot(discord.Client):
                 nestsChannel = self.get_channel(nestsChannelID)
 
                 if now.isocalendar()[1] % 2 == 0:
-                    msg = 'Trainers, nesting species have migrated! The 57th Global ' \
+                    msg = 'Trainers, nesting species have migrated! The {} Global ' \
                             'Nest Migration has occured, and we need @everyone to ' \
-                            'help report new nesting species to the <#{}> channel.'
-                            .format(nestssChannelID)
+                            'help report new nesting species to the <#{}> channel.' \
+                            .format(self.config['events']['migrations'], nestsChannelID)
                 else:
                     msg = '@everyone, Nests will migrate next week!'
 
