@@ -2,6 +2,7 @@
 
 import asyncio
 import discord
+import configparser
 from datetime import datetime
 
 class PgsBot(discord.Client):
@@ -76,5 +77,8 @@ class PgsBot(discord.Client):
 
             await asyncio.sleep(60)
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 client = PgsBot()
-client.run('API_KEY')
+client.run(config['bot']['token'])
