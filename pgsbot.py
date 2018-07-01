@@ -7,6 +7,12 @@ class PgsBot(discord.Client):
         print('Logged in as {0}.'.format(self.user))
 
     async def on_message(self, message):
+        print('<#{}> @{}: {}'.format(
+                message.channel,
+                message.author,
+                message.content
+        ))
+
         if message.author.id == self.user.id:
             return
 
