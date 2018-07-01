@@ -56,6 +56,16 @@ class PgsBot(discord.Client):
                                     'make sure you\'re up early grabbing ' \
                                     'pinap berries and balls!!')
 
+            if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
+                if now.isocalendar()[1] % 2 == 0:
+                    msg = 'Trainers, nesting species have migrated! The 57th Global ' \
+                            'Nest Migration has occured, and we need @everyone to ' \
+                            'help report new nesting species to the #nests channel.'
+                else:
+                    msg = '@everyone, Nests will migrate next week!'
+
+                await channel.send(msg)
+
             await asyncio.sleep(60)
 
 client = PgsBot()
