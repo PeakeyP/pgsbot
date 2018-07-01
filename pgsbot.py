@@ -36,9 +36,9 @@ class PgsBot(discord.Client):
             await message.channel.send(inviteLink)
 
         if message.content == '!community':
-            communityText = 'Hi @everyone,\n' \
-                            'Today is Community Day so dont forget ' \
-                            'to get out and catch some shiny pokemon!'
+            communityText = '<@{}> the next Community Day is {}'.format(
+                    message.author.id,
+                    config['events']['community_day'])
 
             await message.channel.send(communityText)
 
