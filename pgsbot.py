@@ -7,6 +7,9 @@ class PgsBot(discord.Client):
         print('Logged in as {0}.'.format(self.user))
 
     async def on_message(self, message):
+        if message.author.id == self.user.id:
+            return
+
         await message.channel.send('Thanks for your message!')
 
 client = PgsBot()
