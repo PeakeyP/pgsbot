@@ -8,6 +8,7 @@ from datetime import datetime
 class PgsBot(discord.Client):
     def __init__(self, *args, **kwargs):
         print('Loading...')
+        self.config = kwargs['config']
 
         super().__init__(*args, **kwargs)
         self.bg_task = self.loop.create_task(self.bg_task())
@@ -46,7 +47,7 @@ class PgsBot(discord.Client):
 
         print("Connected!")
 
-        channel = self.get_channel(CHANNEL_ID)
+        channel = self.get_channel(int(self.config['channel']['testing']))
 
         while not self.is_closed():
             now = datetime.now()
@@ -80,5 +81,5 @@ class PgsBot(discord.Client):
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-client = PgsBot()
+client = PgsBot(config=config)
 client.run(config['bot']['token'])
