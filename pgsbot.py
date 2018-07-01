@@ -26,6 +26,19 @@ class PgsBot(discord.Client):
         if message.content == '!ping':
             await message.channel.send('pong')
 
+        if message.content == '!invite':
+            inviteLink = 'https://Discord.me' \
+                         '/PokemonGoSomerset :+1:'
+
+            await message.channel.send(inviteLink)
+
+        if message.content == '!community':
+            communityText = 'Hi @everyone,\n' \
+                            'Today is Community Day so dont forget ' \
+                            'to get out and catch some shiny pokemon!'
+
+            await message.channel.send(communityText)
+
     async def bg_task(self):
         await self.wait_until_ready()
 
