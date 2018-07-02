@@ -17,15 +17,21 @@ class PgsBot(discord.Client):
     async def on_ready(self):
         print('Logged in as {0}.'.format(self.user))
 
+    def test_mode(self):
+        return config['bot'].getboolean('test_mode')
+
     def channel_to_id(self, channel):
         return int(self.config['channels'][channel])
 
     def get_channel(self, channel=None):
-        if not channel:
-            channel = 'default'
+        if self.test_mode():
+            channel = 'testing'
+        else:
+            if not channel:
+                channel = 'default'
 
-        if not isinstance(channel, int):
-            channel = self.channel_to_id(channel)
+            if not isinstance(channel, int):
+                channel = self.channel_to_id(channel)
 
         return super().get_channel(self, channel)
 
