@@ -103,7 +103,7 @@ class PgsBot(discord.Client):
 
         print("Connected!")
 
-        channel = self.get_channel()
+        channel = self.get_channel('events')
 
         while not self.is_closed():
             now = datetime.now()
