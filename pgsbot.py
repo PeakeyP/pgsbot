@@ -4,6 +4,7 @@ import asyncio
 import discord
 import configparser
 from datetime import datetime
+from discord.channel import DMChannel
 
 class PgsBot(discord.Client):
     def __init__(self, *args, **kwargs):
@@ -16,6 +17,40 @@ class PgsBot(discord.Client):
     async def on_ready(self):
         print('Logged in as {0}.'.format(self.user))
 
+    def channel_to_id(self, channel):
+        return int(self.config['channels'][channel])
+
+    def get_channel(self, channel=None):
+        if not channel:
+            channel = 'default'
+
+        if not isinstance(channel, int):
+            channel = self.channel_to_id(channel)
+
+        return super().get_channel(self, channel)
+
+    def is_migration_week(self, date):
+        return date.isocalendar()[1] % 2 == 0
+
+    def next_migration(self):
+        now = datetime.now()
+
+        if not self.is_migration_week(now):
+            text = "Nests will migrate next Thursday.\n" \
+                    "Looks like you're stuck with these for a while :worried:"
+        elif now.day < 3:
+            text = 'Nests will migrate this Thursday!'
+        elif now.day > 3:
+            text = 'Nests recently migrated. Get out there and start hunting, trainer!'
+        elif now.hour < 1:
+            text = 'Nests migrate in under an hour! Batteries charged?'
+        elif now.hour > 3:
+            text - 'Nests migrated today!'
+        else:
+            text = 'Nests *just* migrated. What are you waiting for!?'
+
+        return text
+
     async def on_message(self, message):
         print('<#{}> @{}: {}'.format(
                 message.channel,
@@ -25,6 +60,23 @@ class PgsBot(discord.Client):
 
         if message.author.id == self.user.id:
             return
+
+        if message.content == '!commands':
+            mention = message.author.mention
+
+            helptext = 'Hi there, {}!' \
+                    "\nHeard you could use a hand, so here's a list of commands you can use:" \
+                    '\n\n`!help`: Sends you this message in a DM' \
+                    '\n`!ping`: Check if the bot is working' \
+                    '\n`!invite`: Get an invite link to send to your friends' \
+                    '\n`!community`: Find out information about the next Community Day' \
+                    '\n`!migrating`: Check when the next nest migration is due' \
+                    '\n\nHappy Hunting!'.format(mention)
+
+            await message.author.send(helptext)
+
+            if type(message.channel) != DMChannel:
+                await message.channel.send('{} I\'ve sent the command list to your DMs.'.format(mention))
 
         if message.content == '!ping':
             await message.channel.send('pong')
@@ -36,18 +88,22 @@ class PgsBot(discord.Client):
             await message.channel.send(inviteLink)
 
         if message.content == '!community':
-            communityText = '<@{}> the next Community Day is {}'.format(
-                    message.author.id,
-                    config['events']['community_day'])
+            comDay = config['community_day']
+            communityText = '{} the next Community Day event will feature ' \
+                            '**{}** on {} **{}**'.format(message.author.mention,
+                                    comDay['pokemon'], comDay['day'], comDay['date'])
 
             await message.channel.send(communityText)
+
+        if message.content == '!migrating':
+            await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
 
     async def bg_task(self):
         await self.wait_until_ready()
 
         print("Connected!")
 
-        channel = self.get_channel(int(self.config['channel']['testing']))
+        channel = self.get_channel()
 
         while not self.is_closed():
             now = datetime.now()
@@ -67,18 +123,16 @@ class PgsBot(discord.Client):
                         'week - Plenty of time to fill up your bag with goodies!')
 
             if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
-                nestsChannelID = int(self.config['channel']['nests'])
-                nestsChannel = self.get_channel(nestsChannelID)
-
-                if now.isocalendar()[1] % 2 == 0:
+                if self.is_migration_week(now):
                     msg = 'Trainers, nesting species have migrated! The {} Global ' \
                             'Nest Migration has occured, and we need @everyone to ' \
                             'help report new nesting species to the <#{}> channel.' \
-                            .format(self.config['events']['migrations'], nestsChannelID)
+                            .format(self.config['events']['migrations'],
+                                    self.channel_to_id('nests'))
                 else:
                     msg = '@everyone, Nests will migrate next week!'
 
-                await nestsChannel.send(msg)
+                await self.get_channel('nests').send(msg)
 
             await asyncio.sleep(60)
 
