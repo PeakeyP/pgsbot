@@ -16,6 +16,15 @@ class PgsBot(discord.Client):
     async def on_ready(self):
         print('Logged in as {0}.'.format(self.user))
 
+    def channel_to_id(self, channel):
+        return int(self.config['channel'][channel])
+
+    def get_channel(self, channel):
+        if not isinstance(channel, int):
+            channel = self.channel_to_id(channel)
+
+        return super().get_channel(self, channel)
+
     async def on_message(self, message):
         print('<#{}> @{}: {}'.format(
                 message.channel,
@@ -47,7 +56,7 @@ class PgsBot(discord.Client):
 
         print("Connected!")
 
-        channel = self.get_channel(int(self.config['channel']['testing']))
+        channel = self.get_channel('testing')
 
         while not self.is_closed():
             now = datetime.now()
@@ -67,18 +76,16 @@ class PgsBot(discord.Client):
                         'week - Plenty of time to fill up your bag with goodies!')
 
             if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
-                nestsChannelID = int(self.config['channel']['nests'])
-                nestsChannel = self.get_channel(nestsChannelID)
-
                 if now.isocalendar()[1] % 2 == 0:
                     msg = 'Trainers, nesting species have migrated! The {} Global ' \
                             'Nest Migration has occured, and we need @everyone to ' \
                             'help report new nesting species to the <#{}> channel.' \
-                            .format(self.config['events']['migrations'], nestsChannelID)
+                            .format(self.config['events']['migrations'],
+                                    self.channel_to_id('nests'))
                 else:
                     msg = '@everyone, Nests will migrate next week!'
 
-                await nestsChannel.send(msg)
+                await self.get_channel('nests').send(msg)
 
             await asyncio.sleep(60)
 
