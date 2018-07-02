@@ -71,8 +71,8 @@ class PgsBot(discord.Client):
 
         if message.content == '!community':
             comDay = config['community_day']
-            communityText = '<@{}> the next Community Day event will feature ' \
-                            '**{}** on {} **{}**'.format(message.author.id,
+            communityText = '{} the next Community Day event will feature ' \
+                            '**{}** on {} **{}**'.format(message.author.mention,
                                     comDay['pokemon'], comDay['day'], comDay['date'])
 
             await message.channel.send(communityText)
