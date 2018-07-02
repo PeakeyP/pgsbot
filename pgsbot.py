@@ -17,9 +17,12 @@ class PgsBot(discord.Client):
         print('Logged in as {0}.'.format(self.user))
 
     def channel_to_id(self, channel):
-        return int(self.config['channel'][channel])
+        return int(self.config['channels'][channel])
 
-    def get_channel(self, channel):
+    def get_channel(self, channel=None):
+        if not channel:
+            channel = 'default'
+
         if not isinstance(channel, int):
             channel = self.channel_to_id(channel)
 
@@ -56,7 +59,7 @@ class PgsBot(discord.Client):
 
         print("Connected!")
 
-        channel = self.get_channel('testing')
+        channel = self.get_channel()
 
         while not self.is_closed():
             now = datetime.now()
