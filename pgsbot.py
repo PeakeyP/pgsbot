@@ -28,6 +28,28 @@ class PgsBot(discord.Client):
 
         return super().get_channel(self, channel)
 
+    def is_migration_week(self, date):
+        return date.isocalendar()[1] % 2 == 0
+
+    def next_migration(self):
+        now = datetime.now()
+
+        if not self.is_migration_week(now):
+            text = "Nests will migrate next Thursday.\n" \
+                    "Looks like you're stuck with these for a while :worried:"
+        elif now.day < 3:
+            text = 'Nests will migrate this Thursday!'
+        elif now.day > 3:
+            text = 'Nests recently migrated. Get out there and start hunting, trainer!'
+        elif now.hour < 1:
+            text = 'Nests migrate in under an hour! Batteries charged?'
+        elif now.hour > 3:
+            text - 'Nests migrated today!'
+        else:
+            text = 'Nests *just* migrated. What are you waiting for!?'
+
+        return text
+
     async def on_message(self, message):
         print('<#{}> @{}: {}'.format(
                 message.channel,
@@ -55,6 +77,9 @@ class PgsBot(discord.Client):
 
             await message.channel.send(communityText)
 
+        if message.content == '!migrating':
+            await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
+
     async def bg_task(self):
         await self.wait_until_ready()
 
@@ -80,7 +105,7 @@ class PgsBot(discord.Client):
                         'week - Plenty of time to fill up your bag with goodies!')
 
             if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
-                if now.isocalendar()[1] % 2 == 0:
+                if self.is_migration_week(now):
                     msg = 'Trainers, nesting species have migrated! The {} Global ' \
                             'Nest Migration has occured, and we need @everyone to ' \
                             'help report new nesting species to the <#{}> channel.' \
