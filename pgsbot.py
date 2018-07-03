@@ -124,7 +124,8 @@ class PgsBot(discord.Client):
             channel_reply = await self.wait_for('message', check=valid_response)
 
             await channel_reply.channel_mentions[0].send(reply.content)
-            await message.channel.send("Message sent!")
+            await message.channel.send("Message sent to {}: {}".format(
+                channel_reply.content, reply.content))
 
     async def bg_task(self):
         await self.wait_until_ready()
