@@ -9,6 +9,8 @@ from discord.channel import DMChannel
 class PgsBot(discord.Client):
     def __init__(self, *args, **kwargs):
         print('Loading...')
+
+        self.load_admins()
         self.config = kwargs['config']
 
         super().__init__(*args, **kwargs)
@@ -20,6 +22,34 @@ class PgsBot(discord.Client):
         await self.change_presence(
                 status = discord.status.online,
                 activity = discord.Game(name='Pokémon GO'))
+
+    def load_admins(self):
+        self.admins = []
+
+        try:
+            with open('admins.txt') as f:
+                for admin in f.read().splitlines():
+                    self.add_admin(admin)
+
+        except FileNotFoundError:
+            print("admins.txt file does not exist. Admin commands won't run.")
+
+        return bool(len(self.admins))
+
+    def add_admin(self, admin):
+        print('Adding ' + admin + ' to list of admins')
+
+        self.admins.append(int(admin))
+
+    async def is_admin(self, message, send_message=True):
+        if message.author.id in self.admins:
+            return True
+
+        if send_message:
+            await message.channel.send("Sorry {}, I can't do that :frowning:" \
+                    .format(message.author.mention))
+
+        return False
 
     def test_mode(self):
         return config['bot'].getboolean('test_mode')
@@ -109,6 +139,9 @@ class PgsBot(discord.Client):
             await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
 
         if message.content.lower() == 'repeat after me':
+            if not await self.is_admin(message):
+                return
+
             if type(message.channel) == DMChannel:
                 await channel.send("Sorry, no can do. Try it from a real channel instead.")
                 return
