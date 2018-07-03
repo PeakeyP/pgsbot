@@ -116,7 +116,15 @@ class PgsBot(discord.Client):
 
             reply = await self.wait_for('message', check=valid_response)
 
-            await message.channel.send(reply.content)
+            await message.channel.send("Great! Where should I post it?")
+
+            def valid_response(m):
+                return m.author == message.author and len(m.channel_mentions) == 1
+
+            channel_reply = await self.wait_for('message', check=valid_response)
+
+            await channel_reply.channel_mentions[0].send(reply.content)
+            await message.channel.send("Message sent!")
 
     async def bg_task(self):
         await self.wait_until_ready()
