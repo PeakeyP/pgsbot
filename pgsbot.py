@@ -109,14 +109,14 @@ class PgsBot(discord.Client):
             await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
 
         if message.content.lower() == 'repeat after me':
-            await message.channel.send("Okay, I'm listening. What should I say?")
+            what = await message.channel.send("Okay, I'm listening. What should I say?")
 
             def valid_response(m):
                 return m.author == message.author
 
             reply = await self.wait_for('message', check=valid_response)
 
-            await message.channel.send("Great! Where should I post it?")
+            where = await message.channel.send("Great! Where should I post it?")
 
             def valid_response(m):
                 return m.author == message.author and len(m.channel_mentions) == 1
@@ -124,8 +124,14 @@ class PgsBot(discord.Client):
             channel_reply = await self.wait_for('message', check=valid_response)
 
             await channel_reply.channel_mentions[0].send(reply.content)
-            await message.channel.send("Message sent to {}: {}".format(
+            sent = await message.channel.send("Message sent to {}: {}".format(
                 channel_reply.content, reply.content))
+
+            for ch in [channel_reply, where, reply, what, message]:
+                await ch.delete()
+
+            await asyncio.sleep(2)
+            await sent.delete()
 
     async def bg_task(self):
         await self.wait_until_ready()
