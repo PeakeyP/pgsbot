@@ -109,6 +109,10 @@ class PgsBot(discord.Client):
             await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
 
         if message.content.lower() == 'repeat after me':
+            if type(message.channel) == DMChannel:
+                await channel.send("Sorry, no can do. Try it from a real channel instead.")
+                return
+
             what = await message.channel.send("Okay, I'm listening. What should I say?")
 
             def valid_response(m):
