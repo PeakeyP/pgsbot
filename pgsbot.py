@@ -108,6 +108,16 @@ class PgsBot(discord.Client):
         if message.content == '!migrating':
             await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
 
+        if message.content.lower() == 'repeat after me':
+            await message.channel.send("Okay, I'm listening. What should I say?")
+
+            def valid_response(m):
+                return m.author == message.author
+
+            reply = await self.wait_for('message', check=valid_response)
+
+            await message.channel.send(reply.content)
+
     async def bg_task(self):
         await self.wait_until_ready()
 
