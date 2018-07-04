@@ -14,7 +14,7 @@ class Admin:
     async def on_message(self, message):
         if message.content == 'repeat after me':
             if type(message.channel) == discord.DMChannel:
-                await message.channel.send("Sorry, no can do. Try it from a real channel instead.")
+                await message.channel.send("Sorry, no can do. Try it from a channel or use `!say` instead.")
                 return
 
             what = await message.channel.send("Okay, I'm listening. What should I say?")
@@ -42,13 +42,13 @@ class Admin:
         if not await self.is_admin(ctx):
             return
 
-        if type(ctx.channel) == discord.DMChannel:
-            await ctx.channel.send("Sorry, no can do. Try it from a real channel instead.")
-            return
-
         await channel.send(message)
 
         sent = await ctx.channel.send("Message sent to {}: {}".format(channel, message))
+
+
+        if type(ctx.channel) == discord.DMChannel:
+            return
 
         for msg in deletes:
             await msg.delete()
