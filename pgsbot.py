@@ -17,6 +17,10 @@ class PgsBot(discord.Client):
     async def on_ready(self):
         print('Logged in as {0}.'.format(self.user))
 
+        await self.change_presence(
+                status = discord.status.online,
+                activity = discord.Game(name='Pokémon GO'))
+
     def test_mode(self):
         return config['bot'].getboolean('test_mode')
 
