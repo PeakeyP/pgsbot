@@ -4,16 +4,18 @@ import asyncio
 import discord
 import configparser
 from datetime import datetime
+from discord.ext import commands
 from discord.channel import DMChannel
 
-class PgsBot(discord.Client):
+class PgsBot(commands.Bot):
     def __init__(self, *args, **kwargs):
         print('Loading...')
 
         self.load_admins()
         self.config = kwargs['config']
 
-        super().__init__(*args, **kwargs)
+        super().__init__(command_prefix=commands.when_mentioned_or('!'), \
+                *args, **kwargs)
         self.bg_task = self.loop.create_task(self.bg_task())
 
     async def on_ready(self):
@@ -211,5 +213,5 @@ class PgsBot(discord.Client):
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-client = PgsBot(config=config)
-client.run(config['bot']['token'])
+bot = PgsBot(config=config)
+bot.run(config['bot']['token'])
