@@ -13,9 +13,6 @@ class Admin:
 
     async def on_message(self, message):
         if message.content == 'repeat after me':
-            if not await self.is_admin(message):
-                return
-
             if type(message.channel) == discord.DMChannel:
                 await message.channel.send("Sorry, no can do. Try it from a real channel instead.")
                 return
@@ -32,17 +29,32 @@ class Admin:
             def valid_response(m):
                 return m.author == message.author and len(m.channel_mentions) == 1
 
-            channel_reply = await self.bot.wait_for('message', check=valid_response)
+            channel = await self.bot.wait_for('message', check=valid_response)
 
-            await channel_reply.channel_mentions[0].send(reply.content)
-            sent = await message.channel.send("Message sent to {}:\n{}".format(
-                channel_reply.content, reply.content))
+            sent = await self.say_to(message, channel.channel_mentions[0],
+                    reply.content, [channel, where, reply, what, message])
 
-            for ch in [channel_reply, where, reply, what, message]:
-                await ch.delete()
+    @commands.command(hidden=True)
+    async def say(self, ctx, channel: discord.TextChannel, *, message):
+        await self.say_to(ctx, channel, message, [ctx.message])
 
-            await asyncio.sleep(5)
-            await sent.delete()
+    async def say_to(self, ctx, channel, message, deletes = []):
+        if not await self.is_admin(ctx):
+            return
+
+        if type(ctx.channel) == discord.DMChannel:
+            await ctx.channel.send("Sorry, no can do. Try it from a real channel instead.")
+            return
+
+        await channel.send(message)
+
+        sent = await ctx.channel.send("Message sent to {}: {}".format(channel, message))
+
+        for msg in deletes:
+            await msg.delete()
+
+        await asyncio.sleep(3)
+        await sent.delete()
 
     def load_admins(self):
         self.admins = []
@@ -62,13 +74,13 @@ class Admin:
 
         self.admins.append(int(admin))
 
-    async def is_admin(self, message, send_message=True):
-        if message.author.id in self.admins:
+    async def is_admin(self, ctx, send_message=True):
+        if ctx.author.id in self.admins:
             return True
 
         if send_message:
-            await message.channel.send("Sorry {}, I can't do that :frowning:" \
-                    .format(message.author.mention))
+            await ctx.send("Sorry {}, I can't do that :frowning:" \
+                    .format(ctx.author.mention))
 
         return False
 
