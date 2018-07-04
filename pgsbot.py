@@ -18,6 +18,7 @@ class PgsBot(commands.Bot):
                 *args, **kwargs)
 
         self.load_extension('cogs.misc')
+        self.load_extension('cogs.community-day')
 
         self.bg_task = self.loop.create_task(self.bg_task())
 
@@ -124,14 +125,6 @@ class PgsBot(commands.Bot):
 
             if type(message.channel) != DMChannel:
                 await message.channel.send('{} I\'ve sent the command list to your DMs.'.format(mention))
-
-        if message.content == '!community':
-            comDay = config['community_day']
-            communityText = '{} the next Community Day event will feature ' \
-                            '**{}** on {} **{}**'.format(message.author.mention,
-                                    comDay['pokemon'], comDay['day'], comDay['date'])
-
-            await message.channel.send(communityText)
 
         if message.content == '!migrating':
             await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
