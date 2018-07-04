@@ -5,7 +5,6 @@ import discord
 import configparser
 from datetime import datetime
 from discord.ext import commands
-from discord.channel import DMChannel
 
 class PgsBot(commands.Bot):
     def __init__(self, *args, **kwargs):
@@ -108,23 +107,6 @@ class PgsBot(commands.Bot):
 
         if message.author.id == self.user.id:
             return
-
-        if message.content == '!commands':
-            mention = message.author.mention
-
-            helptext = 'Hi there, {}!' \
-                    "\nHeard you could use a hand, so here's a list of commands you can use:" \
-                    '\n\n`!help`: Sends you this message in a DM' \
-                    '\n`!ping`: Check if the bot is working' \
-                    '\n`!invite`: Get an invite link to send to your friends' \
-                    '\n`!community`: Find out information about the next Community Day' \
-                    '\n`!migrating`: Check when the next nest migration is due' \
-                    '\n\nHappy Hunting!'.format(mention)
-
-            await message.author.send(helptext)
-
-            if type(message.channel) != DMChannel:
-                await message.channel.send('{} I\'ve sent the command list to your DMs.'.format(mention))
 
         if message.content == '!migrating':
             await message.channel.send('{} {}'.format(message.author.mention, self.next_migration()))
