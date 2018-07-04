@@ -5,7 +5,7 @@ from discord.ext import commands
 import discord
 
 class Nests:
-    """The description for Nests goes here."""
+    """Nests change every other Thursday, but which Thursday!?"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -13,6 +13,10 @@ class Nests:
 
     @commands.command(aliases=['migration'])
     async def migrating(self, ctx):
+        """
+        Says how long's left before the next nest migration
+        """
+
         await ctx.send('{} {}'.format(ctx.author.mention, self.next_migration()))
 
     def next_migration(self):

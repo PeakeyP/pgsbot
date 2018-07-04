@@ -5,7 +5,7 @@ import discord
 import asyncio
 
 class Admin:
-    """Commands that can only be run by an admin"""
+    """These commands can only be run by an admin."""
 
     def __init__(self, bot):
         self.bot = bot

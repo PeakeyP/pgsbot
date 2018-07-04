@@ -12,8 +12,9 @@ class PgsBot(commands.Bot):
 
         self.config = kwargs['config']
 
-        super().__init__(command_prefix=commands.when_mentioned_or('!'), \
-                *args, **kwargs)
+        super().__init__(command_prefix=commands.when_mentioned_or('!'),
+                description="I'm a home-made Discord bot built especially for Pokemon GO Somerset!" \
+                        "\n\nHere's a list of commands you can use:", *args, **kwargs)
 
         self.load_extension('cogs.admin')
         self.load_extension('cogs.misc')
