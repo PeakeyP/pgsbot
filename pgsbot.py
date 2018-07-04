@@ -16,6 +16,9 @@ class PgsBot(commands.Bot):
 
         super().__init__(command_prefix=commands.when_mentioned_or('!'), \
                 *args, **kwargs)
+
+        self.load_extension('cogs.misc')
+
         self.bg_task = self.loop.create_task(self.bg_task())
 
     async def on_ready(self):
@@ -94,6 +97,8 @@ class PgsBot(commands.Bot):
         return text
 
     async def on_message(self, message):
+        await super().on_message(message)
+
         print('<#{}> @{}: {}'.format(
                 message.channel,
                 message.author,
@@ -119,15 +124,6 @@ class PgsBot(commands.Bot):
 
             if type(message.channel) != DMChannel:
                 await message.channel.send('{} I\'ve sent the command list to your DMs.'.format(mention))
-
-        if message.content == '!ping':
-            await message.channel.send('pong')
-
-        if message.content == '!invite':
-            inviteLink = 'https://Discord.me' \
-                         '/PokemonGoSomerset :+1:'
-
-            await message.channel.send(inviteLink)
 
         if message.content == '!community':
             comDay = config['community_day']
