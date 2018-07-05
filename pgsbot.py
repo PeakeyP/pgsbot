@@ -55,9 +55,6 @@ class PgsBot(commands.Bot):
                 message.content
         ))
 
-        if message.author.id == self.user.id:
-            return
-
     async def bg_task(self):
         await self.wait_until_ready()
 
