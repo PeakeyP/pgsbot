@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 
-import asyncio
 import discord
 import configparser
-from datetime import datetime
 from discord.ext import commands
 
 class PgsBot(commands.Bot):
@@ -64,27 +62,6 @@ class PgsBot(commands.Bot):
         await self.wait_until_ready()
 
         print("Connected!")
-
-        channel = self.get_channel('events')
-
-        while not self.is_closed():
-            now = datetime.now()
-            nextCommunityDay = 8
-
-            if now.day == nextCommunityDay and now.hour == 8 and now.minute == 0:
-                await channel.send( '@everyone today is Community Day, ' \
-                                    'make sure you\'re up early grabbing ' \
-                                    'pinap berries and balls!!')
-
-            if now.day == nextCommunityDay - 2 and now.hour == 10 and now.minute == 0:
-                await channel.send( '@everyone Community Day is in 2 days! ' \
-                                    'Make sure you\'re stocked up!')
-
-            if now.day == nextCommunityDay - 7 and now.hour == 10 and now.minute == 0:
-                await channel.send( '@everyone we have got a Community Day in a ' \
-                        'week - Plenty of time to fill up your bag with goodies!')
-
-            await asyncio.sleep(60)
 
 config = configparser.ConfigParser()
 config.read('config.ini')
