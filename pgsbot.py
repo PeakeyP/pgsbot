@@ -25,7 +25,7 @@ class PgsBot(commands.Bot):
         print('Logged in as {0}.'.format(self.user))
 
         await self.change_presence(
-                status = discord.status.online,
+                status = discord.Status.online,
                 activity = discord.Game(name='Pokémon GO'))
 
     def test_mode(self):
@@ -44,7 +44,7 @@ class PgsBot(commands.Bot):
             if not isinstance(channel, int):
                 channel = self.channel_to_id(channel)
 
-        return super().get_channel(self, channel)
+        return super().get_channel(channel)
 
     async def on_message(self, message):
         await super().on_message(message)
