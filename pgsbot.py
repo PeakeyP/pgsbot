@@ -48,9 +48,6 @@ class PgsBot(commands.Bot):
 
         return super().get_channel(self, channel)
 
-    def is_migration_week(self, date):
-        return date.isocalendar()[1] % 2 == 0
-
     async def on_message(self, message):
         await super().on_message(message)
 
@@ -86,18 +83,6 @@ class PgsBot(commands.Bot):
             if now.day == nextCommunityDay - 7 and now.hour == 10 and now.minute == 0:
                 await channel.send( '@everyone we have got a Community Day in a ' \
                         'week - Plenty of time to fill up your bag with goodies!')
-
-            if now.weekday() == 3 and now.hour == 2 and now.minute == 17:
-                if self.is_migration_week(now):
-                    msg = 'Trainers, nesting species have migrated! The {} Global ' \
-                            'Nest Migration has occured, and we need @everyone to ' \
-                            'help report new nesting species to the <#{}> channel.' \
-                            .format(self.config['events']['migrations'],
-                                    self.channel_to_id('nests'))
-                else:
-                    msg = '@everyone, Nests will migrate next week!'
-
-                await self.get_channel('nests').send(msg)
 
             await asyncio.sleep(60)
 
